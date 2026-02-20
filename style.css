@@ -1,0 +1,537 @@
+/* ============================================================
+   CLIMA DEL REINO — Estilo Solo Leveling / System UI
+   ============================================================
+
+   VARIABLES CSS: son como "cajas" donde guardamos colores
+   para no repetirlos en todo el archivo. Si quieres cambiar
+   un color, solo lo cambias aquí y afecta a todo el diseño.
+*/
+
+:root {
+  /* Colores principales */
+  --purpura:        #7c3aed;
+  --purpura-bright: #a855f7;
+  --purpura-glow:   rgba(124, 58, 237, 0.6);
+  --azul-oscuro:    #0d0d1a;
+  --azul-panel:     #0f0f23;
+  --azul-card:      #13132b;
+  --borde:          rgba(124, 58, 237, 0.4);
+  --borde-bright:   rgba(168, 85, 247, 0.8);
+  --texto:          #e2e8f0;
+  --texto-dim:      #64748b;
+  --dorado:         #f59e0b;
+  --cyan:           #06b6d4;
+  --rojo:           #ef4444;
+  --verde:          #10b981;
+}
+
+/* ── Reset básico ─────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Fondo principal: oscuro como una dungeon ─────── */
+body {
+  font-family: 'Rajdhani', sans-serif;
+  background-color: var(--azul-oscuro);
+  background-image:
+    /* Patrón de puntos pequeños */
+    radial-gradient(circle at 1px 1px, rgba(124,58,237,0.15) 1px, transparent 0);
+  background-size: 32px 32px;
+  min-height: 100vh;
+  color: var(--texto);
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ── Partículas de fondo (creadas con JS) ─────────── */
+#particulas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.particula {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: var(--purpura-bright);
+  border-radius: 50%;
+  animation: flotar linear infinite;
+  opacity: 0;
+}
+
+@keyframes flotar {
+  0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+  10%  { opacity: 0.6; }
+  90%  { opacity: 0.3; }
+  100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+}
+
+/* ── Resplandor del gate/portal ───────────────────── */
+.gate-glow {
+  position: fixed;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 400px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(124,58,237,0.2) 0%,
+    rgba(168,85,247,0.05) 40%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+  animation: gatePulse 4s ease-in-out infinite;
+}
+
+@keyframes gatePulse {
+  0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+  50%       { opacity: 1;   transform: translateX(-50%) scale(1.1); }
+}
+
+/* ── Contenedor principal ─────────────────────────── */
+.contenedor {
+  position: relative;
+  z-index: 1;
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ══ HEADER ═══════════════════════════════════════── */
+.header-sistema {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.sistema-badge {
+  display: inline-block;
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 4px;
+  color: var(--purpura-bright);
+  border: 1px solid var(--borde);
+  padding: 4px 16px;
+  margin-bottom: 1rem;
+  animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% { box-shadow: 0 0 8px var(--purpura-glow); }
+  50%       { box-shadow: 0 0 20px var(--purpura-glow), 0 0 40px rgba(124,58,237,0.2); }
+}
+
+.titulo-sistema {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(2rem, 7vw, 3.5rem);
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--texto);
+  letter-spacing: 4px;
+  text-shadow: 0 0 30px rgba(168,85,247,0.5);
+}
+
+.titulo-acento {
+  color: var(--purpura-bright);
+  text-shadow:
+    0 0 20px var(--purpura-glow),
+    0 0 60px rgba(124,58,237,0.3);
+}
+
+.subtitulo {
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--texto-dim);
+  letter-spacing: 2px;
+  line-height: 2;
+}
+
+.subtitulo-api {
+  color: var(--cyan);
+  font-size: 0.7rem;
+}
+
+/* ══ PANEL DE BÚSQUEDA ════════════════════════════── */
+.panel-busqueda {
+  background: var(--azul-panel);
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  padding: 1.5rem;
+  /* Sombra con brillo púrpura */
+  box-shadow:
+    0 0 0 1px rgba(124,58,237,0.1),
+    inset 0 1px 0 rgba(255,255,255,0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.panel-titulo {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  color: var(--purpura-bright);
+  letter-spacing: 3px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-icono {
+  font-size: 1rem;
+}
+
+/* ── Input + Botón ────────────────────────────────── */
+.input-grupo {
+  display: flex;
+  gap: 8px;
+}
+
+/* Campo de texto donde escribes la ciudad */
+.input-ciudad {
+  flex: 1;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--borde);
+  border-radius: 3px;
+  padding: 12px 16px;
+  color: var(--texto);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Efecto al hacer clic en el input */
+.input-ciudad:focus {
+  border-color: var(--purpura-bright);
+  box-shadow: 0 0 16px rgba(124,58,237,0.3);
+}
+
+.input-ciudad::placeholder {
+  color: var(--texto-dim);
+  font-style: italic;
+}
+
+/* Botón de búsqueda */
+.btn-buscar {
+  background: linear-gradient(135deg, var(--purpura), #5b21b6);
+  border: 1px solid var(--purpura-bright);
+  border-radius: 3px;
+  padding: 12px 20px;
+  color: white;
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-buscar:hover {
+  background: linear-gradient(135deg, var(--purpura-bright), var(--purpura));
+  box-shadow: 0 0 20px var(--purpura-glow);
+  transform: translateY(-1px);
+}
+
+.btn-buscar:active {
+  transform: translateY(1px);
+}
+
+.btn-buscar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-icono {
+  font-size: 1rem;
+}
+
+/* ── Accesos rápidos ──────────────────────────────── */
+.ciudades-rapidas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.rapidas-label {
+  font-size: 0.65rem;
+  color: var(--texto-dim);
+  letter-spacing: 1px;
+}
+
+/* Botones de ciudad rápida */
+.btn-portal {
+  background: transparent;
+  border: 1px solid rgba(124,58,237,0.3);
+  border-radius: 2px;
+  padding: 4px 12px;
+  color: var(--purpura-bright);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-portal:hover {
+  background: rgba(124,58,237,0.15);
+  border-color: var(--purpura-bright);
+  box-shadow: 0 0 10px rgba(124,58,237,0.2);
+}
+
+/* ══ ESTADO DE CARGA ══════════════════════════════── */
+.estado-carga {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+/* Anillo giratorio (spinner) */
+.carga-anillo {
+  width: 56px;
+  height: 56px;
+  border: 3px solid rgba(124,58,237,0.2);
+  border-top-color: var(--purpura-bright);
+  border-right-color: var(--cyan);
+  border-radius: 50%;
+  animation: girar 1s linear infinite;
+}
+
+@keyframes girar {
+  to { transform: rotate(360deg); }
+}
+
+.carga-texto {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  color: var(--purpura-bright);
+  letter-spacing: 3px;
+  animation: parpadeo 1.5s ease-in-out infinite;
+}
+
+@keyframes parpadeo {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+/* ══ PANEL DE ERROR ════════════════════════════════ */
+.panel-error {
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.3);
+  border-radius: 4px;
+  padding: 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.error-icono {
+  font-size: 2rem;
+  color: var(--rojo);
+}
+
+.error-titulo {
+  font-family: 'Cinzel', serif;
+  font-size: 0.8rem;
+  color: var(--rojo);
+  letter-spacing: 3px;
+}
+
+.error-texto {
+  font-size: 0.9rem;
+  color: rgba(239,68,68,0.7);
+  letter-spacing: 1px;
+}
+
+/* ══ TARJETA DE CLIMA ══════════════════════════════ */
+.tarjeta-clima {
+  background: var(--azul-card);
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow:
+    0 0 40px rgba(124,58,237,0.15),
+    inset 0 1px 0 rgba(255,255,255,0.03);
+  animation: aparecerTarjeta 0.4s ease-out;
+}
+
+@keyframes aparecerTarjeta {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+    box-shadow: none;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    box-shadow: 0 0 40px rgba(124,58,237,0.15);
+  }
+}
+
+/* Encabezado de la tarjeta */
+.tarjeta-header {
+  background: linear-gradient(135deg, rgba(124,58,237,0.2), rgba(13,13,26,0.8));
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--borde);
+}
+
+.tarjeta-rango {
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  color: var(--purpura-bright);
+  letter-spacing: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.ciudad-nombre {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.5rem, 5vw, 2.2rem);
+  font-weight: 700;
+  color: var(--texto);
+  letter-spacing: 2px;
+  text-shadow: 0 0 20px rgba(168,85,247,0.4);
+}
+
+.ciudad-pais {
+  font-size: 0.9rem;
+  color: var(--texto-dim);
+  letter-spacing: 3px;
+  margin-top: 0.2rem;
+}
+
+/* Temperatura principal */
+.temp-principal {
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.temp-numero {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(3.5rem, 12vw, 5rem);
+  font-weight: 900;
+  line-height: 1;
+  /* Texto con gradiente */
+  background: linear-gradient(135deg, var(--purpura-bright), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.temp-descripcion {
+  font-size: 1.1rem;
+  color: var(--texto-dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  max-width: 200px;
+}
+
+.temp-icono {
+  font-size: 4rem;
+  filter: drop-shadow(0 0 12px rgba(124,58,237,0.5));
+}
+
+/* Separador decorativo */
+.separador-dungeon {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 0 2rem;
+  color: var(--purpura-bright);
+  opacity: 0.5;
+}
+
+/* Grid de estadísticas tipo RPG */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--borde);
+  border-top: 1px solid var(--borde);
+  margin-top: 1rem;
+}
+
+/* Cada "stat" es como un atributo del personaje */
+.stat-item {
+  background: var(--azul-card);
+  padding: 1rem;
+  text-align: center;
+  transition: background 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.stat-item:hover {
+  background: rgba(124,58,237,0.08);
+}
+
+.stat-icono {
+  font-size: 1.3rem;
+  margin-bottom: 2px;
+}
+
+.stat-label {
+  font-size: 0.6rem;
+  color: var(--texto-dim);
+  letter-spacing: 2px;
+  font-weight: 600;
+}
+
+.stat-valor {
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  color: var(--cyan);
+  font-weight: 700;
+}
+
+.stat-max { color: var(--rojo); }
+.stat-min { color: var(--cyan); }
+
+/* Footer de la tarjeta */
+.tarjeta-footer {
+  padding: 0.75rem 2rem;
+  border-top: 1px solid var(--borde);
+  font-size: 0.65rem;
+  color: var(--texto-dim);
+  letter-spacing: 2px;
+  text-align: right;
+}
+
+/* ── Clase utilitaria para ocultar elementos ──────── */
+.hidden { display: none !important; }
+
+/* ── Responsive para móviles ──────────────────────── */
+@media (max-width: 480px) {
+  .contenedor { padding: 1rem 1rem 3rem; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .temp-principal { flex-direction: column; align-items: flex-start; }
+  .input-grupo { flex-direction: column; }
+  .btn-buscar { justify-content: center; }
+}

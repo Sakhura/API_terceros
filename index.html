@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SISTEMA — Clima del Reino</title>
+
+  <!--
+    ╔══════════════════════════════════════════╗
+    ║  Aquí conectamos las fuentes de texto    ║
+    ║  Cinzel → títulos épicos estilo RPG      ║
+    ║  Rajdhani → texto del cuerpo             ║
+    ╚══════════════════════════════════════════╝
+  -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ░░ PARTÍCULAS DE FONDO (se crean con JavaScript) ░░ -->
+  <div id="particulas"></div>
+
+  <!-- ░░ EFECTO DE PORTAL/GATE ░░ -->
+  <div class="gate-glow"></div>
+
+  <main class="contenedor">
+
+    <!-- ══ CABECERA DEL SISTEMA ══ -->
+    <header class="header-sistema">
+      <div class="sistema-badge">[ SISTEMA ]</div>
+      <h1 class="titulo-sistema">
+        CLIMA DEL<br>
+        <span class="titulo-acento">REINO</span>
+      </h1>
+      <p class="subtitulo">
+        ▸ INTERFAZ DE RECONOCIMIENTO CLIMATICO ◂<br>
+        <span class="subtitulo-api">Powered by OpenWeatherMap API</span>
+      </p>
+    </header>
+
+    <!-- ══ PANEL DE BÚSQUEDA ══ -->
+    <div class="panel-busqueda">
+      <div class="panel-titulo">
+        <span class="panel-icono">⚔</span>
+        SELECCIONA TU TERRITORIO
+      </div>
+
+      <!--
+        INPUT: aquí el jugador escribe la ciudad
+        El atributo "id" nos permite encontrarlo en JavaScript
+      -->
+      <div class="input-grupo">
+        <input
+          type="text"
+          id="inputCiudad"
+          class="input-ciudad"
+          placeholder="Ingresa una ciudad..."
+          autocomplete="off"
+        />
+        <button class="btn-buscar" id="btnBuscar" onclick="buscarClima()">
+          <span class="btn-icono">◈</span>
+          EXPLORAR
+        </button>
+      </div>
+
+      <!-- Ciudades de acceso rápido -->
+      <div class="ciudades-rapidas">
+        <span class="rapidas-label">PORTALES RÁPIDOS →</span>
+        <button class="btn-portal" onclick="buscarRapido('Santiago')">Santiago</button>
+        <button class="btn-portal" onclick="buscarRapido('Tokyo')">Tokyo</button>
+        <button class="btn-portal" onclick="buscarRapido('Seoul')">Seoul</button>
+        <button class="btn-portal" onclick="buscarRapido('New York')">New York</button>
+      </div>
+    </div>
+
+    <!-- ══ ESTADO DE CARGA ══ -->
+    <div class="estado-carga hidden" id="estadoCarga">
+      <div class="carga-anillo"></div>
+      <p class="carga-texto">ACCEDIENDO A LA DUNGEON...</p>
+    </div>
+
+    <!-- ══ PANEL DE ERROR ══ -->
+    <div class="panel-error hidden" id="panelError">
+      <div class="error-icono">⚠</div>
+      <p class="error-titulo">MISIÓN FALLIDA</p>
+      <p class="error-texto" id="textoError"></p>
+    </div>
+
+    <!-- ══ TARJETA DE RESULTADOS ══ -->
+    <div class="tarjeta-clima hidden" id="tarjetaClima">
+
+      <!-- Encabezado de la tarjeta -->
+      <div class="tarjeta-header">
+        <div class="tarjeta-rango">[ INFORME CLIMATICO ]</div>
+        <div class="ciudad-nombre" id="ciudadNombre">—</div>
+        <div class="ciudad-pais" id="ciudadPais">—</div>
+      </div>
+
+      <!-- Temperatura principal -->
+      <div class="temp-principal">
+        <div class="temp-numero" id="tempNumero">—°</div>
+        <div class="temp-descripcion" id="tempDescripcion">—</div>
+        <div class="temp-icono" id="tempIcono">🌡</div>
+      </div>
+
+      <!-- Separador estilo dungeon -->
+      <div class="separador-dungeon">
+        <span>◆</span><span>◆</span><span>◆</span>
+      </div>
+
+      <!-- Estadísticas secundarias tipo RPG -->
+      <div class="stats-grid">
+
+        <div class="stat-item">
+          <div class="stat-icono">💧</div>
+          <div class="stat-label">HUMEDAD</div>
+          <div class="stat-valor" id="humedad">—</div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-icono">💨</div>
+          <div class="stat-label">VIENTO</div>
+          <div class="stat-valor" id="viento">—</div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-icono">🌡</div>
+          <div class="stat-label">SENSACIÓN</div>
+          <div class="stat-valor" id="sensacion">—</div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-icono">👁</div>
+          <div class="stat-label">VISIBILIDAD</div>
+          <div class="stat-valor" id="visibilidad">—</div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-icono">⬆</div>
+          <div class="stat-label">TEMP MAX</div>
+          <div class="stat-valor stat-max" id="tempMax">—</div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-icono">⬇</div>
+          <div class="stat-label">TEMP MIN</div>
+          <div class="stat-valor stat-min" id="tempMin">—</div>
+        </div>
+
+      </div>
+
+      <!-- Footer de la tarjeta -->
+      <div class="tarjeta-footer">
+        <span id="horaActualizacion"></span>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!--
+    ╔═══════════════════════════════════╗
+    ║  Conectamos nuestro archivo       ║
+    ║  JavaScript al final del body     ║
+    ║  para que el HTML cargue primero  ║
+    ╚═══════════════════════════════════╝
+  -->
+  <script src="app.js"></script>
+</body>
+</html>
